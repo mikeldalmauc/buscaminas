@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke: #f7f7f7;
+        stroke-width: 1px;
+        fill-rule: evenodd;
+      }
+
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2 {
+        fill: #d7d7d7;
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-4 {
+        fill: #0f1845;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="114" y1="180.012" x2="407" y2="215.988" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#NaNNaNNaN"/>
+      <stop offset="0.181" stop-color="#5d4fef"/>
+      <stop offset="0.325" stop-color="#fdc2d8"/>
+      <stop offset="0.526" stop-color="#fff"/>
+      <stop offset="0.703" stop-color="#ff7983"/>
+      <stop offset="1" stop-color="#041282"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="109" y1="177.012" x2="402" y2="212.988" xlink:href="#linear-gradient"/>
+  </defs>
+  <path id="Shape_4_copy" data-name="Shape 4 copy" class="cls-1" d="M115.344,122C162.525,135.674,316.109,158.741,407,138.136c1.492-.339-46.847,20.326-55.106,53.786-6.78,27.47,10.994,40.89,34.945,72.61,47.607,3.292-209.87,30.942-272.839-26.893C126.421,180.24,152.517,181,115.344,122Z"/>
+  <path id="Shape_1_copy" data-name="Shape 1 copy" class="cls-2" d="M105,113.011c0.482,0.482-.76,310.145,0,310.145s16,1.913,16,0-0.182-311.328,0-311.145,7-6.711,7-7S118.089,95.818,118,89c-0.107.107-8.978,0.032-13,0-1.389,8.3-.294,9.194-8,16.007C101.659,109.848,104.821,113.549,105,113.011Z"/>
+  <path class="cls-3" d="M110.344,119C157.525,132.674,311.109,155.741,402,135.136c1.492-.339-46.847,20.326-55.106,53.786-6.78,27.47,10.994,40.89,34.945,72.61,47.607,3.292-209.87,30.942-272.839-26.893C121.421,177.24,147.517,178,110.344,119Z"/>
+  <path class="cls-4" d="M100,110.011c0.482,0.482-.76,310.145,0,310.145s16,1.913,16,0-0.182-311.328,0-311.145,7-6.711,7-7S113.089,92.818,113,86c-0.107.107-8.978,0.032-13,0-1.389,8.3-.294,9.194-8,16.007C96.66,106.848,99.821,110.549,100,110.011Z"/>
+</svg>

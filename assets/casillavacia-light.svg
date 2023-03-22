@@ -1,0 +1,38 @@
+<svg id="marcoLight" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #eaeaea;
+      }
+
+      .cls-1, .cls-3 {
+        stroke: #f7f7f7;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 1px;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #7a7a7a;
+      }
+
+      .cls-2, .cls-4 {
+        stroke: #7a7a7a;
+      }
+
+      .cls-3 {
+        fill: #494949;
+      }
+
+      .cls-4 {
+        fill: #a7a7a7;
+      }
+    </style>
+  </defs>
+  <path id="Rectangle_1_copy_10" data-name="Rectangle 1 copy 10" class="cls-1" d="M480,479l20,20.987V0h0L479,21Z"/>
+  <path id="Rectangle_1_copy_11" data-name="Rectangle 1 copy 11" class="cls-2" d="M20.934,480.066l-20.987,20H499.934l-21-21Z"/>
+  <path id="Rectangle_1_copy_12" data-name="Rectangle 1 copy 12" class="cls-3" d="M19.938,21.063L-0.062.076V500.063h0l21-21Z"/>
+  <path id="Rectangle_1_copy_12-2" data-name="Rectangle 1 copy 12" class="cls-4" d="M479,20L499.99,0H0L21,21Z"/>
+</svg>
