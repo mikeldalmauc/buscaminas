@@ -1,5 +1,8 @@
 
-const sizes =       [1, 40, 99, 150, 1000];
+/*
+* Tipos de partidas 5 distintos actualmente
+*/
+const mines =       [1, 40, 99, 150, 1000];
 const dimensionsR = [9, 16, 16, 30, 100];
 const dimensionsC = [9, 16, 30, 30, 100];
 
@@ -63,6 +66,9 @@ function initTablero(){
 
     model.estado = "Juego";
     model.horaInicio = "SinInicio";
+    model.minas = mines[model.size];
+    model.rows = dimensionsR[model.size];
+    model.cols = dimensionsC[model.size];
     model.aguas = (model.rows * model.cols) - model.minas;
     
     let appeared = {};
@@ -114,20 +120,14 @@ function update(event, numeroFila, numeroColumna, action){
 
     if(action == "Increase"){
 
-        model.size++;
-        if(model.size >= sizes.length || model.size < 0)
-            model.size = 0;
-
-        model.minas = sizes[model.size];
-        model.rows = dimensionsR[model.size];
-        model.cols = dimensionsC[model.size];
+        // Increase by one
+        model.size = model.size >= mines.length?0:model.size++;
 
         model.tablero = initTablero();
 
         view();
-    } else if(action == "Restart") {
+    } else if(action == "Start") {
 
-        model.minas = sizes[model.size];
         model.tablero = initTablero();
         view();
         
@@ -332,7 +332,7 @@ function viewTopPanel(){
 
     // Botones
     topPanel.appendChild(viewBotonIncrease());
-    topPanel.appendChild(viewBotonRestart());
+    topPanel.appendChild(viewBotonStart());
 
     // Contador
     topPanel.appendChild(viewTemporizador());
@@ -447,13 +447,13 @@ function viewBotonIncrease(){
     return boton;
 }
 
-function viewBotonRestart(){
+function viewBotonStart(){
 
     let boton = document.createElement("input");
-    boton.value = "Restart";
+    boton.value = "Start";
     buttonStyle(boton);
 
-    boton.onclick = () => update(null, null, null, "Restart");
+    boton.onclick = () => update(null, null, null, "Start");
 
     return boton;
 }
@@ -548,31 +548,23 @@ function lanzarConfeti(){
     
     let bb = document.getElementsByClassName("ms-tablero")[0].getBoundingClientRect();
     let steps = 10;
-
-    // izq a der
     for(let i=0; i<steps; i++){
-        
-        let requestBurst = {
+
+        // izq a der
+        setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify({
             x: Math.floor(bb.x + (bb.width / steps)*i)
-          , y: Math.floor(bb.y + 100 + randomInt(100))
-          , direction: Math.floor(-47 + i*5)
-          , action: "Victory"
-         };
-         
-        setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify(requestBurst)), i*100);
-    }
-
-    // Der a izq
-    for(let i=0; i<steps; i++){
+           , y: Math.floor(bb.y + 100 + randomInt(100))
+           , direction: Math.floor(-47 + i*5)
+           , action: "Victory"
+       })), i*100);
         
-        let requestBurst = {
+        // Der a izq
+        setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify({
             x: Math.floor(bb.x + (bb.width / steps)*(steps-i))
-          , y: Math.floor(bb.y + 100 + randomInt(100))
-          , direction: Math.floor(47 - i*5)
-          , action: "Victory"
-         };
-         
-        setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify(requestBurst)), i*100);
+           , y: Math.floor(bb.y + 100 + randomInt(100))
+           , direction: Math.floor(47 - i*5)
+           , action: "Victory"
+       })), i*100);
     }
 }
 
