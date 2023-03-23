@@ -67,7 +67,7 @@ function initTablero(){
 
     model.estado = "Juego";
     model.horaInicio = "SinInicio";
-    model.horaFin = "SinInicio";
+    model.horaFin = "SinFin";
     model.minas = mines[model.size];
     model.rows = dimensionsR[model.size];
     model.cols = dimensionsC[model.size];
@@ -136,10 +136,15 @@ function update(event, numeroFila, numeroColumna, action){
         
     } else if(action == "Timer") {
         
-        let timer = document.getElementById("ms-temp");
-        let parent = document.getElementsByClassName("ms-top-panel")[0];
-        parent.removeChild(timer);
-        parent.appendChild(viewTemporizador());
+        
+        if(model.horaFin != "SinFin")
+            clearInterval(timerInterval);
+        else{
+            let timer = document.getElementById("ms-temp");
+            let parent = document.getElementsByClassName("ms-top-panel")[0];
+            parent.removeChild(timer);
+            parent.appendChild(viewTemporizador());
+        }
 
     } else if(action == "SueloDown"){
 
@@ -153,9 +158,9 @@ function update(event, numeroFila, numeroColumna, action){
             view();
         }
     }else if(action =="ClickLosa"){
-        
+
         // Es el primer click?
-        if(model.horaInicio  == "SinInicio"){
+        if(model.horaInicio == "SinInicio"){
             model.horaInicio = new Date();
     
             timerInterval = setInterval(() => {
