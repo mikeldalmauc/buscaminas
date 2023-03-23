@@ -8,6 +8,7 @@ const dimensionsC = [9, 16, 30, 30, 100];
 
 let model;
 let oldModel;
+
 let styles;
 let timerInterval;
 let myApp;
@@ -55,12 +56,11 @@ let vecinos  = (tablero, r, c) => filasVec(r, tablero.length)
 let minasVecinas  = (tablero, r, c) => vecinos(tablero, r, c).filter(vec => vec.type == "Mina");
 let losasVecinas  = (tablero, r, c) => vecinos(tablero, r, c).filter(esLosa);
 let losasVaciasVecinas  = (tablero, r, c) => vecinos(tablero, r, c).filter(casilla => casilla.class == "Losa");
-
 let esAgua = casilla => ["Mina","Expl", "minaDesactivada", "notMina"].indexOf(casilla.class) < 0;
 let esIcono = casilla => ["Mina","Expl", "maybeMina", "minaDesactivada", "notMina"].indexOf(casilla.class) > -1;
 let esLosa = casilla => ["Losa", "maybeMina"].indexOf(casilla.class) > -1;
 let descubiertas = (model) => model.tablero.flatMap(cas => cas.filter(c => c.type == "Agua" && c.class == "Agua")).length;
-
+let isRighClick = (event) => event && event.which === 3;
 
 function initTablero(){
 
@@ -117,15 +117,16 @@ function update(event, numeroFila, numeroColumna, action){
     
     oldModel = JSON.parse(JSON.stringify(model));
 
+    let rightClick = isRighClick(event);
 
     if(action == "Increase"){
 
         // Increase by one
-        model.size = model.size >= mines.length?0:model.size++;
+        model.size = model.size >= mines.length-1?0:model.size+1;
 
         model.tablero = initTablero();
-
         view();
+
     } else if(action == "Start") {
 
         model.tablero = initTablero();
@@ -158,15 +159,6 @@ function update(event, numeroFila, numeroColumna, action){
             timerInterval = setInterval(() => {
                 update(null, null, null, "Timer");
             }, 1000);
-        }
-
-        let rightClick = false;
-
-    
-        // Click derecho? prevenimos el menu contextual
-        if (event.which === 3){
-            rightClick = true;
-            event.preventDefault();
         }
     
         // Se añaden marcas a las minas
@@ -495,20 +487,22 @@ function viewCasilla(casilla, numeroFila, numeroColumna){
     
     let li = document.createElement("li");
 
-    
     // Clase básica
     li.classList =  "ms-" + (esLosa(casilla)?"Losa":"Suelo") ;
     
-    if(esLosa(casilla) && casilla.pulsada){
-        li.classList  += " ms-Losa_Pulsada";
+    if(esLosa(casilla)){
+        if(casilla.pulsada)
+            li.classList  += " ms-Losa_Pulsada";
+    
+    } else {
+        
+        // Si agua y tiene vecino bomba poner numero
+        if(esAgua(casilla) && casilla.vec > 0){
+            li.classList += " ms-" + casilla.vec
+            li.innerText = casilla.vec;
+        }
     }
 
-    // Si agua y tiene vecino bomba poner numero
-    if(!esLosa(casilla) && esAgua(casilla) && casilla.vec > 0 && !casilla.pulsada){
-        li.classList += " ms-" + casilla.vec
-        li.innerText = casilla.vec;
-    }
-    
     // Iconos si toca
     if(esIcono(casilla)){
         let icon = document.createElement("div");
@@ -525,21 +519,24 @@ function viewCasilla(casilla, numeroFila, numeroColumna){
         
         li.addEventListener('contextmenu', ev => {
             ev.preventDefault();
-            return false;
         }, false);
     } else {
         li.addEventListener("mouseup", ev => {
-            update(ev, numeroFila, numeroColumna, "SueloUp");
+            if(!isRighClick(ev))
+                update(ev, numeroFila, numeroColumna, "SueloUp");
         })
 
         li.addEventListener("mousedown", ev => {
-            update(ev, numeroFila, numeroColumna, "SueloDown");
+            if(!isRighClick(ev))
+                update(ev, numeroFila, numeroColumna, "SueloDown");
         })
-
-        li.addEventListener('contextmenu', ev => {
-            ev.preventDefault();
-        }, false);
     }
+
+    // A todas las casillas, impedir que se abra el menu con click derecho
+    li.addEventListener('contextmenu', ev => {
+        ev.preventDefault();
+        return false;
+    }, false);
 
     return li;
 }
@@ -547,24 +544,24 @@ function viewCasilla(casilla, numeroFila, numeroColumna){
 function lanzarConfeti(){
     
     let bb = document.getElementsByClassName("ms-tablero")[0].getBoundingClientRect();
-    let steps = 10;
+    let steps = 8;
     for(let i=0; i<steps; i++){
 
         // izq a der
         setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify({
             x: Math.floor(bb.x + (bb.width / steps)*i)
-           , y: Math.floor(bb.y + 100 + randomInt(100))
+           , y: Math.floor(bb.y + 100 + randomInt(bb.height/2))
            , direction: Math.floor(-47 + i*5)
            , action: "Victory"
-       })), i*100);
+       })), i*60);
         
         // Der a izq
         setTimeout(() => myApp.ports.messageReceiver.send(JSON.stringify({
             x: Math.floor(bb.x + (bb.width / steps)*(steps-i))
-           , y: Math.floor(bb.y + 100 + randomInt(100))
+           , y: Math.floor(bb.y + 100 + randomInt(bb.height/2))
            , direction: Math.floor(47 - i*5)
            , action: "Victory"
-       })), i*100);
+       })), i*60);
     }
 }
 
@@ -576,153 +573,152 @@ function css(){
     let heightTablero = model.rows*heightMina+ 60;
     let widthTablero = model.cols*widthMina + 60;
 
-    return `
-*,
-*:before,
-*:after {
-    position: relative;
-    box-sizing: border-box;
-}
+        return `
+    *,
+    *:before,
+    *:after {
+        position: relative;
+        box-sizing: border-box;
+    }
 
-.ms-buscaminas {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .ms-buscaminas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.ms-top-panel{
-    display: flex;
-    min-width: px;
-    flex-direction: row;
-}
+    .ms-top-panel{
+        display: flex;
+        min-width: px;
+        flex-direction: row;
+    }
 
-.ms-tablero {
-    user-select: none; 
-    display: flex;
-    flex-direction: column;
-    margin: unset;
+    .ms-tablero {
+        user-select: none; 
+        display: flex;
+        flex-direction: column;
+        margin: unset;
 
-    max-height:  ${heightTablero}px;
-    max-width:  ${widthTablero}px;
+        max-height:  ${heightTablero}px;
+        max-width:  ${widthTablero}px;
 
-    background-size: cover; 
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-image: url('/assets/cats.jpg');
+        background-size: cover; 
+        overflow: hidden;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-image: url('/assets/cats.jpg');
 
-    border-style: groove;
-    border-width: 15px;
-    padding: 15px;
-}
+        border-style: groove;
+        border-width: 15px;
+        padding: 15px;
+    }
 
-.ms-tablero > ul {
-    list-style-type: none;
-    padding-inline-start: unset;
-    margin: unset;
-}
+    .ms-tablero > ul {
+        list-style-type: none;
+        padding-inline-start: unset;
+        margin: unset;
+    }
 
-.ms-fila{
-    display: flex;
-    flex-direction: row;
-    margin: unset;
+    .ms-fila{
+        display: flex;
+        flex-direction: row;
+        margin: unset;
 
-}
+    }
 
-.ms-Losa, .ms-Suelo {
-    min-height:  ${heightMina}px;
-    min-width:  ${widthMina}px;
-    font-size: 1.5em;
-    text-align: center;
-    background-size: contain;
-    background-position: center center;
-}
+    .ms-Losa, .ms-Suelo {
+        min-height:  ${heightMina}px;
+        min-width:  ${widthMina}px;
+        font-size: 1.5em;
+        text-align: center;
+        background-size: contain;
+        background-position: center center;
+    }
 
-.ms-Losa {
-    background-image: url( '/assets/casillavacia.svg' );
-    /* background-image: url( '/assets/casillavacia.svg' ); */
-}
+    .ms-Losa {
+        background-image: url( '/assets/casillavacia.svg' );
+        /* background-image: url( '/assets/casillavacia.svg' ); */
+    }
 
-.ms-Losa_hover {
-    background-image: url( '/assets/casillavacia.svg' );
-    transition: 0s background-image;
-}
+    .ms-Losa_hover {
+        background-image: url( '/assets/casillavacia.svg' );
+        transition: 0s background-image;
+    }
 
-.ms-Losa_hover:hover {
-    background-image: url( '/assets/casillavaciaPulsada.svg' );
-    transition-delay:0.3s;
-}
+    .ms-Losa_hover:hover {
+        background-image: url( '/assets/casillavaciaPulsada.svg' );
+        transition-delay:0.3s;
+    }
 
-.ms-Losa_Pulsada{
-    background-image: url( '/assets/casillavaciaPulsada.svg' );
-}
+    .ms-Losa_Pulsada{
+        background-image: url( '/assets/casillavaciaPulsada.svg' );
+    }
 
-.ms-Suelo {
-    background-image: url( '/assets/casillavaciadw.svg' );
-    /* background-image: url( '/assets/casillavaciadw.svg' ); */
-} 
+    .ms-Suelo {
+        background-image: url( '/assets/casillavaciadw.svg' );
+        /* background-image: url( '/assets/casillavaciadw.svg' ); */
+    } 
 
-.ms-Mina, .ms-Expl, .ms-maybeMina, .ms-notMina, .ms-minaDesactivada {
-    height:  100%;
-    width:  100%;
-    font-size: 1.5em;
-    text-align: center;
-    background-size: contain;
-    background-position: center center;
-    z-index: 10;
-    position: absolute;
-}
+    .ms-Mina, .ms-Expl, .ms-maybeMina, .ms-notMina, .ms-minaDesactivada {
+        height:  100%;
+        width:  100%;
+        font-size: 1.5em;
+        text-align: center;
+        background-size: contain;
+        background-position: center center;
+        z-index: 10;
+        position: absolute;
+    }
 
-.ms-Mina {
-    background-image: url( '/assets/bomba.svg' );
-} 
+    .ms-Mina {
+        background-image: url( '/assets/bomba.svg' );
+    } 
 
-.ms-Expl {
-    background-image: url( '/assets/bombaExpl.svg' );
-} 
+    .ms-Expl {
+        background-image: url( '/assets/bombaExpl.svg' );
+    } 
 
-.ms-maybeMina {
-    background-image: url( '/assets/maybeBomba.svg' );
-} 
+    .ms-maybeMina {
+        background-image: url( '/assets/maybeBomba.svg' );
+    } 
 
-.ms-notMina {
-    background-image: url( '/assets/notBomba.svg' );
-} 
+    .ms-notMina {
+        background-image: url( '/assets/notBomba.svg' );
+    } 
 
-.ms-minaDesactivada {
-    background-image: url( '/assets/bombaDesactivada.svg' );
-} 
+    .ms-minaDesactivada {
+        background-image: url( '/assets/bombaDesactivada.svg' );
+    } 
 
-.ms-1, .ms-2, .ms-3, .ms-4 ,.ms-5, .ms-6,.ms-7,.ms-8{
-    padding-top: 0;
-}
-.ms-1{
-    color:rgb(41, 41, 212);
-}
-.ms-2{
-    color:darkgreen;
-}
-.ms-3{
-    color: red;
-}
-.ms-4{
-    color:rgb(3, 3, 90);
-}
-.ms-5{
-   color: darkmagenta
-}
-.ms-6{
-    filter: darkorchid;
-}
-.ms-7{
-    color: greenyellow;
-}
-.ms-8{
-    color: coral;
-}
+    .ms-1, .ms-2, .ms-3, .ms-4 ,.ms-5, .ms-6,.ms-7,.ms-8{
+        padding-top: 0;
+    }
+    .ms-1{
+        color:rgb(41, 41, 212);
+    }
+    .ms-2{
+        color:darkgreen;
+    }
+    .ms-3{
+        color: red;
+    }
+    .ms-4{
+        color:rgb(3, 3, 90);
+    }
+    .ms-5{
+    color: darkmagenta
+    }
+    .ms-6{
+        filter: darkorchid;
+    }
+    .ms-7{
+        color: greenyellow;
+    }
+    .ms-8{
+        color: coral;
+    }
     ` + 
      `
-      
       button {
         border: 0;
         background: #369;
