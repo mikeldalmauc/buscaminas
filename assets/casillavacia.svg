@@ -28,7 +28,7 @@
       }
 
       .cls-5 {
-        fill: #c1c1c1;
+        fill: #bababa;
       }
     </style>
   </defs>
@@ -36,5 +36,5 @@
   <path id="Rectangle_1_copy_3" data-name="Rectangle 1 copy 3" class="cls-2" d="M500,499.987h0V0h0L250,250.2h0Z"/>
   <path id="Rectangle_1_copy_4" data-name="Rectangle 1 copy 4" class="cls-3" d="M0.013,500H500L249.8,250h0Z"/>
   <path id="Rectangle_1_copy_5" data-name="Rectangle 1 copy 5" class="cls-4" d="M0,0.013H0V500H0L250,249.8h0Z"/>
-  <path id="Rectangle_1_copy" data-name="Rectangle 1 copy" class="cls-5" d="M20.325,20.325h458.93v458.93H20.325V20.325h0Z"/>
+  <path id="Rectangle_1_copy_10" data-name="Rectangle 1 copy 10" class="cls-5" d="M20.325,20.325h458.93v458.93H20.325V20.325h0Z"/>
 </svg>

@@ -1,0 +1,40 @@
+<svg id="marco" xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #7a7a7a;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-5 {
+        stroke: #4d4d4d;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        stroke-width: 1px;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #494949;
+      }
+
+      .cls-3 {
+        fill: #a7a7a7;
+      }
+
+      .cls-4 {
+        fill: #eaeaea;
+        stroke: #f7f7f7;
+      }
+
+      .cls-5 {
+        fill: #bababa;
+      }
+    </style>
+  </defs>
+  <path id="Rectangle_1_copy_2" data-name="Rectangle 1 copy 2" class="cls-1" d="M0.42,500H500L250,250h0Z"/>
+  <path id="Rectangle_1_copy_3" data-name="Rectangle 1 copy 3" class="cls-2" d="M0,0.013H0V500H0L250,249.8h0Z"/>
+  <path id="Rectangle_1_copy_4" data-name="Rectangle 1 copy 4" class="cls-3" d="M499.987,0H0L250.2,250h0Z"/>
+  <path id="Rectangle_1_copy_5" data-name="Rectangle 1 copy 5" class="cls-4" d="M500,499.987h0V0h0L250,250.2h0Z"/>
+  <path id="Rectangle_1_copy_10" data-name="Rectangle 1 copy 10" class="cls-5" d="M479.675,479.675H20.745V20.745h458.93v458.93h0Z"/>
+</svg>

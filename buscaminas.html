@@ -6,11 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     
-    <link rel="stylesheet" href="buscaminas.css" />
-    <script src="buscaminas.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
 
+    <script src="buscaminas.mjs"></script>
+    
+    <script type="module">
+        import {init} from './buscaminas.mjs';
+        $(function(){
+            init();
+        });
+    </script>
 </head>
-<body onload="init()">
+
+<body>
     
     <div id="app"></div>
     
