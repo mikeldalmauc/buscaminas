@@ -35,6 +35,7 @@ export function init(elmApp){
         , cols: 9
         , minas: 10
         , horaInicio: "SinInicio"
+        , horaFin:"SinInicio"
         };
         
     // oldModel = JSON.parse(JSON.stringify(model));
@@ -66,6 +67,7 @@ function initTablero(){
 
     model.estado = "Juego";
     model.horaInicio = "SinInicio";
+    model.horaFin = "SinInicio";
     model.minas = mines[model.size];
     model.rows = dimensionsR[model.size];
     model.cols = dimensionsC[model.size];
@@ -199,6 +201,7 @@ function descubrirCasilla(casilla){
 
         // Descubrimos todas las casillas
         if(model.estado != "Juego"){
+            model.horaFin = new Date();
             descubrirTablero();
         }
     }
@@ -511,26 +514,27 @@ function viewCasilla(casilla, numeroFila, numeroColumna){
     }
 
     // Eventos si toca, solo las losas se pueden pulsar
-    if(esLosa(casilla)){
+    if(model.estado == "Juego")
+        if(esLosa(casilla)){
 
-        li.addEventListener("mouseup", ev => {
-            update(ev, numeroFila, numeroColumna, "ClickLosa");
-        })
-        
-        li.addEventListener('contextmenu', ev => {
-            ev.preventDefault();
-        }, false);
-    } else {
-        li.addEventListener("mouseup", ev => {
-            if(!isRighClick(ev))
-                update(ev, numeroFila, numeroColumna, "SueloUp");
-        })
+            li.addEventListener("mouseup", ev => {
+                update(ev, numeroFila, numeroColumna, "ClickLosa");
+            })
+            
+            li.addEventListener('contextmenu', ev => {
+                ev.preventDefault();
+            }, false);
+        } else {
+            li.addEventListener("mouseup", ev => {
+                if(!isRighClick(ev))
+                    update(ev, numeroFila, numeroColumna, "SueloUp");
+            })
 
-        li.addEventListener("mousedown", ev => {
-            if(!isRighClick(ev))
-                update(ev, numeroFila, numeroColumna, "SueloDown");
-        })
-    }
+            li.addEventListener("mousedown", ev => {
+                if(!isRighClick(ev))
+                    update(ev, numeroFila, numeroColumna, "SueloDown");
+            })
+        }
 
     // A todas las casillas, impedir que se abra el menu con click derecho
     li.addEventListener('contextmenu', ev => {
