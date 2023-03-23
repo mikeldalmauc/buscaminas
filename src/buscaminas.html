@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+
+    <script src="buscaminas.mjs"></script>
+    <script src="../build/confeti.js"></script>
+</head>
+
+<body>
+    
+    <div id="myapp"></div>
+    <div id="buscaminas" class="ms-buscaminas"></div>
+
+    
+    <script type="module">
+        // Cargamos la app de el que es la que usa los confetis
+        var myApp = Elm.Main.init({
+          node: document.getElementById('myapp')
+        });
+
+        import {init} from './buscaminas.mjs';
+        $(function(){
+            init(myApp);
+        });
+    </script>
+</body>
+</html>
